@@ -8,6 +8,7 @@ public class MainMenu : MonoBehaviour
 {
     public TMP_InputField countSatellite;
     public TMP_InputField positionType;
+    public TMP_Text statusLog;
     public GameObject CanSAT;
     private List<GameObject> satList = new List<GameObject>();
 
@@ -36,11 +37,17 @@ public class MainMenu : MonoBehaviour
                 satList.Add(satellite);
             }
         }
-        Debug.Log("Setting apply " + cnt);
+        printLog("Generate " + tide*tide + " satellites.");
+        
     }
 
     public void OnClickStart()
     {
-        Debug.Log("Start Simulation");
+        printLog("Start Simulation.");
+    }
+
+    public void printLog(string s){
+        statusLog.text += s;
+        statusLog.text += "\n";
     }
 }
