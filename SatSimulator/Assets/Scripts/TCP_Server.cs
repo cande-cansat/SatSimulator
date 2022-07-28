@@ -67,7 +67,7 @@ public class TCP_Server : MonoBehaviour
         try
         {
             // Create listener on 192.168.0.2 port 50001
-            tcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), 50001);
+            tcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), 50003);
             tcpListener.Start();
             Debug.Log("Server is listening");
 
@@ -112,6 +112,11 @@ public class TCP_Server : MonoBehaviour
 
     void OnApplicationQuit()
     {
+        AbortThread();
+    }
+
+    public void AbortThread()
+    {
         tcpListenerThread.Abort();
     }
 
@@ -119,7 +124,7 @@ public class TCP_Server : MonoBehaviour
     // Handle Touch Signal
     private void GetPositionHandler(byte[] bytes)
     {
-        Debug.Log("Execute Touch Handler");
+        Debug.Log("Execute Gps Position Handler");
         float val_sat_x = BitConverter.ToSingle(bytes, 0);
         float val_sat_y = BitConverter.ToSingle(bytes, 4);
         float val_sat_z = BitConverter.ToSingle(bytes, 8);

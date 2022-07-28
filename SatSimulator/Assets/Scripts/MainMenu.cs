@@ -44,6 +44,7 @@ public class MainMenu : MonoBehaviour
     public void OnClickStart()
     {
         printLog("Start Simulation.");
+        
     }
 
     public void printLog(string s){
