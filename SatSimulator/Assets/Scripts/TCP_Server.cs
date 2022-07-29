@@ -114,6 +114,10 @@ public class TCP_Server : MonoBehaviour
     {
         AbortThread();
     }
+    void OnDestroy()
+    {
+        AbortThread();
+    }
 
     public void AbortThread()
     {

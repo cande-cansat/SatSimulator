@@ -10,7 +10,10 @@ public class MainMenu : MonoBehaviour
     public TMP_InputField positionType;
     public TMP_Text statusLog;
     public GameObject CanSAT;
-    private List<GameObject> satList = new List<GameObject>();
+
+    public GameObject PrefabManager;
+    public static List<GameObject> satList = new List<GameObject>();
+    private GameObject pmInstance;
 
     void Start()
     {
@@ -44,7 +47,10 @@ public class MainMenu : MonoBehaviour
     public void OnClickStart()
     {
         printLog("Start Simulation.");
-        
+        if(pmInstance != null){
+            GameObject.Destroy(pmInstance);
+        }
+        pmInstance = Instantiate(PrefabManager, new Vector3(0,0,0), Quaternion.identity);
     }
 
     public void printLog(string s){
