@@ -8,8 +8,9 @@ public class PrefabManager : MonoBehaviour
 {
     public GameObject TargetPrefab;
     public GameObject TCPserverPrefab;
+    public GameObject PathCoordPrefab;
 
-    private TMP_Text statusLog;
+    public TMP_Text statusLog;
 
     float pos_sat_x, pos_sat_y, pos_sat_z;
     float pos_target_x, pos_target_y, pos_target_z;
@@ -21,11 +22,20 @@ public class PrefabManager : MonoBehaviour
     private GameObject targetMissile;
     private GameObject TCPserver;
 
+    private PathCalculator pathCalculator;
+    private Coordinate targetCoordinate;
+    private Coordinate satelliteCoordinate;
+
+    private List<Coordinate> targetPath;
+    private List<GameObject> pathCrdList = new List<GameObject>();
+    
+
     private Boolean isTargetVisual = false;
     private void Start() {
         if(TCPserver == null){
             TCPserver = GameObject.Instantiate(TCPserverPrefab, new Vector3(0,0,0), Quaternion.identity);
         }
+        pathCalculator = new PathCalculator();
         recentTime = DateTime.Now.Ticks;
         satelliteRigidbody = GetComponent<Rigidbody>();
         TCP_Server.Instance.SetGpsPositionCallback(new CallbackGpsPosition(OnPositionChange));
@@ -50,9 +60,22 @@ public class PrefabManager : MonoBehaviour
             cansat.transform.position = Vector3.MoveTowards(cansat.transform.position, destination, Math.Abs(pos_sat_z - cansat.transform.position.y)/(float)(deltaTime.TotalSeconds * 60));
         }
         if(isTargetVisual){
+            if(targetPath != null){
+                if(pathCrdList != null){
+                    foreach(var point in pathCrdList){
+                        Destroy(point);
+                    }
+                }
+                foreach(var pathCrd in targetPath){
+                    GameObject pathCrdPoint = Instantiate(PathCoordPrefab);
+                    pathCrdPoint.transform.position = new Vector3(pathCrd.item1, pathCrd.item3, pathCrd.item2);
+                    pathCrdList.Add(pathCrdPoint);
+                }
+            }
+
             if(targetMissile == null){
                 targetMissile = GameObject.Instantiate(TargetPrefab, new Vector3(pos_target_x, pos_target_z, pos_target_y), Quaternion.identity);
-                statusLog.text += String.Format("[CanSAT] Target detected, Lat : {0}, Long : {1}, Alt : {2}\n", pos_target_x, pos_target_y, pos_target_z);
+                Variables.logMessages.Enqueue(String.Format("[CanSAT] Target detected, Lat : {0}, Long : {1}, Alt : {2}\n", pos_target_x, pos_target_y, pos_target_z));
             }
             destination = new Vector3(pos_target_x, pos_target_z, pos_target_y);
             targetMissile.transform.position = Vector3.MoveTowards(targetMissile.transform.position, destination, Math.Abs(pos_sat_z - targetMissile.transform.position.y)/(float)(deltaTime.TotalSeconds * 60));
@@ -71,13 +94,22 @@ public class PrefabManager : MonoBehaviour
         pos_sat_x = sat_x;
         pos_sat_y = sat_y;
         pos_sat_z = sat_z + (float)0.5;
+        // Variables.logMessages.Enqueue(String.Format("[Cansat] Satellite : {0}, {1}, {2}", sat_x, sat_y, sat_z));
 
         if(target_x != -1){
+            
             pos_target_x = target_x;
             pos_target_y = target_y;
             pos_target_z = target_z;
 
-            isTargetVisual = true;
+            if(isTargetVisual){
+                pathCalculator.setTimeDiff((float)deltaTime.TotalSeconds);
+                targetPath = pathCalculator.calcPath(targetCoordinate, new Coordinate(target_x, target_y, target_z));
+            }
+            else{
+                isTargetVisual = true;
+            }
+            targetCoordinate = new Coordinate(target_x, target_y, target_z);
         }
     }
 }

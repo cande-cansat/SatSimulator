@@ -44,6 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 138d39e06224ebb4ba85a4dc92de5ab0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SatellitePrefab: {fileID: 6193791934448987725, guid: 032c71b11e0def942a77b5bee4993fe5, type: 3}
   TargetPrefab: {fileID: 8405347463809388277, guid: 00f59d7fc8908ba418cb667b06866f10, type: 3}
   TCPserverPrefab: {fileID: 5210735884034612348, guid: 462f40ef8b2b06847b92a05160b4d9cb, type: 3}
+  PathCoordPrefab: {fileID: 8405347463809388277, guid: 5d0e576f7fb627c44b5782feb0f3f33a, type: 3}

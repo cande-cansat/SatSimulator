@@ -8,6 +8,10 @@ public class MainMenu : MonoBehaviour
 {
     public TMP_InputField countSatellite;
     public TMP_InputField positionType;
+
+    public TMP_InputField serverIpAddr;
+    public TMP_InputField serverPort;
+
     public TMP_Text statusLog;
     public GameObject CanSAT;
 
@@ -19,6 +23,13 @@ public class MainMenu : MonoBehaviour
     {
         
     
+    }
+
+    void Update()
+    {
+        if(Variables.logMessages.Count > 0){
+            printLog(Variables.logMessages.Dequeue());
+        }
     }
 
     public void OnClickApply()
@@ -40,6 +51,9 @@ public class MainMenu : MonoBehaviour
                 satList.Add(satellite);
             }
         }
+
+        Variables.serverIpAddr = serverIpAddr.text;
+        Variables.serverPort = int.Parse(serverPort.text);
         printLog("Generate " + tide*tide + " satellites.");
         
     }

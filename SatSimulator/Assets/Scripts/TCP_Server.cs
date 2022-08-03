@@ -6,6 +6,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using TMPro;
+
 
 
 public delegate void CallbackGpsPosition(float sat_x, float sat_y, float sat_z, float target_x, float target_y, float target_z);
@@ -17,6 +19,9 @@ public class TCP_Server : MonoBehaviour
     private Thread tcpListenerThread;
     private TcpClient connectedTcpClient;
     #endregion
+
+    
+
 
     private static TCP_Server instance = null;
     CallbackGpsPosition callbackGpsPosition;
@@ -67,7 +72,16 @@ public class TCP_Server : MonoBehaviour
         try
         {
             // Create listener on 192.168.0.2 port 50001
-            tcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), 50003);
+            
+            // tcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), 50003);
+            
+            if(Variables.serverIpAddr == "Any"){
+                tcpListener = new TcpListener(IPAddress.Any, Variables.serverPort);
+            }
+            else{
+                tcpListener = new TcpListener(IPAddress.Parse(Variables.serverIpAddr), Variables.serverPort);
+            }
+            
             tcpListener.Start();
             Debug.Log("Server is listening");
 
